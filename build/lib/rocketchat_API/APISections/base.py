@@ -84,25 +84,22 @@ class RocketChatBase:
         reduced_args = self.__reduce_kwargs(kwargs)
         # Since pass is a reserved word in Python it has to be injected on the request dict
         # Some methods use pass (users.register) and others password (users.create)
-        print("call_api_post")
         if "password" in reduced_args and method != "users.create":
             reduced_args["pass"] = reduced_args["password"]
             del reduced_args["password"]
-        print("use_json: ", use_json)
         if use_json is None:
             # see https://requests.readthedocs.io/en/master/user/quickstart/#more-complicated-post-requests
             # > The json parameter is ignored if either data or files is passed.
             # If files are sent, json should not be used
             use_json = files is None
-        print("server_url",self.server_url + self.API_path + method)
         if use_json:
             return self.req.post(
                 self.server_url + self.API_path + method,
                 json=reduced_args,
                 files=files,
                 headers=self.headers,
-                verify=False,
-                cert=False,
+                verify=self.ssl_verify,
+                cert=self.cert,
                 proxies=self.proxies,
                 timeout=self.timeout,
             )
@@ -111,8 +108,8 @@ class RocketChatBase:
             data=reduced_args,
             files=files,
             headers=self.headers,
-            verify=False,
-            cert=False,
+            verify=self.ssl_verify,
+            cert=self.cert,
             proxies=self.proxies,
             timeout=self.timeout,
         )
@@ -147,7 +144,6 @@ class RocketChatBase:
                 login_request.json().get("data").get("authToken")
             )
             self.headers["X-User-Id"] = login_request.json().get("data").get("userId")
-            print("HEADERS: ", self.headers)
             return login_request
 
         raise RocketConnectionException()

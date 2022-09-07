@@ -17,7 +17,7 @@ from rocketchat_API.APISections.subscriptions import RocketChatSubscriptions
 from rocketchat_API.APISections.teams import RocketChatTeams
 from rocketchat_API.APISections.users import RocketChatUsers
 from rocketchat_API.APISections.video_conferences import RocketChatVideConferences
-from rocketchat_API.APISections.e2e import RocketChatE2E
+
 
 class RocketChat(
     RocketChatUsers,
@@ -37,6 +37,5 @@ class RocketChat(
     RocketChatLivechat,
     RocketChatTeams,
     RocketChatRoles,
-    RocketChatE2E,
 ):
     pass
